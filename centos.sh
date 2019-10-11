@@ -117,7 +117,10 @@ yum -y install tcpdump iperf iftop
 #------------------------------
 
 yum -y install iptables-services
-systemct enable iptables
+systemctl enable iptables
+systemctl start iptables
+iptables -F
+service iptables save
 
 #------------------------------
 # Security

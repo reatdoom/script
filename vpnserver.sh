@@ -42,7 +42,7 @@ if [ -z $VPN_IPSEC_PSK ]; then
 fi
 
 if [ -z $IPSEC_CIDR ]; then
-    L2TP_CIDR=192.168.100.0/24
+    IPSEC_CIDR=172.32.0.0/24
 fi
 
 if [ -z $L2TP_CIDR ]; then
@@ -71,7 +71,7 @@ yum -y install strongswan xl2tpd
 # 系统设置
 #------------------------------
 
-echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+echo "net.ipv4.ip_forward=1" > /etc/sysctl.conf
 
 for vpn in /proc/sys/net/ipv4/conf/*;
 do
@@ -251,3 +251,13 @@ ip rule add from $L2TP_CIDR pref 102 lookup 102
 EOF
 
 chmod +x /etc/rc.local
+
+#------------------------------
+# 启动
+#------------------------------
+
+systemctl enable strongswan
+systemctl enable xl2tpd
+
+systemctl start strongswan
+systemctl start xl2tpd
