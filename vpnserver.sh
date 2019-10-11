@@ -211,6 +211,9 @@ EOF
 # 防火墙 - NAT
 #------------------------------
 
+iptables -F
+iptables -t nat -F
+
 iptables -A INPUT -p udp --dport 500 -j ACCEPT
 iptables -A INPUT -p tcp --dport 4500 -j ACCEPT
 iptables -A INPUT -p udp --dport 4500 -j ACCEPT
@@ -232,20 +235,13 @@ service iptables save
 
 if [ $GW ]
 then
-    ip route add default via $GW table 102
-    ip route add 8.8.8.8 via $GW
-cat > /etc/rc.local << EOF
+cat >> /etc/rc.local << EOF
 ip route add default via $GW table 102
 ip route add 8.8.8.8 via $GW
 EOF
-else
-    echo > /etc/rc.local
 fi
 
-ip rule add to $L2TP_CIDR lookup main
-ip rule add from $L2TP_CIDR pref 102 lookup 102
-
-cat > /etc/rc.local << EOF
+cat >> /etc/rc.local << EOF
 ip rule add to $L2TP_CIDR lookup main
 ip rule add from $L2TP_CIDR pref 102 lookup 102
 EOF
