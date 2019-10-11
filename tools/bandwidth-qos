@@ -1,0 +1,25 @@
+#!/bin/sh
+
+while true
+do
+    read -p "限速IP (e.g. 1.1.1.1): " ip
+    if [ -z $ip ]; then
+        echo "please set ip."
+    else
+        break
+    fi
+done
+
+while true
+do
+    read -p "限速带宽 (e.g. 20m): " bw
+    if [ -z $bw ]; then
+        echo "please set bandwidth."
+    else
+        break
+    fi
+done
+
+port=$(neutron port-list | grep $ip |cut -d ' ' -f 2)
+
+neutron port-update $port --qos-policy $bw
